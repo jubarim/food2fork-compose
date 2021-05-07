@@ -66,8 +66,6 @@ dependencies {
     implementation AndroidX.app_compat
     implementation AndroidX.constraint_layout
     implementation AndroidX.ui_tooling
-    implementation AndroidX.nav_fragment_ktx // will remove later
-    implementation AndroidX.nav_ui_ktx // will remove later
     implementation AndroidX.compose_ui
     implementation AndroidX.compose_foundation
     implementation AndroidX.compose_material
