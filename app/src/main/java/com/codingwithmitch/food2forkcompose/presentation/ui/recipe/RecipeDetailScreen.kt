@@ -2,6 +2,7 @@ package com.codingwithmitch.food2forkcompose.presentation.ui.recipe
 
 import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import com.codingwithmitch.food2forkcompose.util.TAG
@@ -14,9 +15,9 @@ fun RecipeDetailScreen(
     recipeId: Int?,
     viewModel: RecipeViewModel
 ) {
-    Log.d(TAG, "RecipeDetailScreen: $viewModel")
+    Log.d(TAG , "RecipeDetailScreen: $viewModel")
 
-    Text("RecipeDetailScreen: $recipeId ")
+    Text("Recipe id: $recipeId ", style = MaterialTheme.typography.h2)
 
 //    val loading = viewModel.loading.value
 //

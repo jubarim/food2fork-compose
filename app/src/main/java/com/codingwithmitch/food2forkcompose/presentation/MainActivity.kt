@@ -7,10 +7,8 @@ import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.codingwithmitch.food2forkcompose.R
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
 import com.codingwithmitch.food2forkcompose.presentation.navigation.Screen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeDetailScreen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeViewModel
@@ -41,18 +39,22 @@ class MainActivity : AppCompatActivity() {
                     RecipeListScreen(
                         isDarkTheme = (application as BaseApplication).isDark.value,
                         onToggleTheme = (application as BaseApplication)::toggleLightTheme,
+                        onNavigateToRecipeDetailScreen = navController::navigate, // it passes the route here
                         viewModel = viewModel
                     )
                 }
 
-                composable(route = Screen.RecipeDetail .route) { navBackStackEntry ->
+                composable(
+                    route = Screen.RecipeDetail.route + "/{$RECIPE_ID}",
+                    arguments = listOf(navArgument(RECIPE_ID) { type = NavType.IntType } )
+                ) { navBackStackEntry ->
                     val factory = HiltViewModelFactory(AmbientContext.current, navBackStackEntry)
                     val viewModel: RecipeViewModel = viewModel(
                         "RecipeViewModel", factory
                     )
                     RecipeDetailScreen(
                         isDarkTheme = (application as BaseApplication).isDark.value,
-                        recipeId = 1, // TODO: fix later
+                        recipeId = navBackStackEntry.arguments?.getInt(RECIPE_ID),
                         viewModel = viewModel
                     )
                 }
@@ -60,7 +62,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    companion object {
+        // Used for navigation argument
+        const val RECIPE_ID = "recipeId"
+    }
 }
 
 
