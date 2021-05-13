@@ -26,8 +26,8 @@ data class RecipeDto(
         var ingredients: List<String> = emptyList(),
 
         @SerializedName("date_added")
-        var dateAdded: String,
+        var longDateAdded: Long,
 
         @SerializedName("date_updated")
-        var dateUpdated: String,
+        var longDateUpdated: Long,
 )
