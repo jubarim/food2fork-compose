@@ -28,20 +28,33 @@ class SearchRecipes(
             // TODO: just to show pagination / progress bar because API is fast
             delay(1000)
 
+            // force error for testing
+            if (query == "error") {
+                throw Exception("Search FAILED!")
+            }
+
             // TODO("Check if there is an internet connection")
-            val recipes = getRecipesFromNetwork(token, page, query)
+            // Convert: NetworkRecipeEntity -> Recipe -> RecipeCacheEntity
+            val recipes = getRecipesFromNetwork(
+                token = token,
+                page = page,
+                query = query,
+            )
 
             // insert into the cache
             recipeDao.insertRecipes(entityMapper.toEntityList(recipes))
 
             // query the cache
             val cacheResult = if (query.isBlank()) {
-                recipeDao.getAllRecipes(RECIPE_PAGINATION_PAGE_SIZE, page)
+                recipeDao.getAllRecipes(
+                    pageSize = RECIPE_PAGINATION_PAGE_SIZE,
+                    page = page
+                )
             } else {
                 recipeDao.searchRecipes(
                     query = query,
-                    page = page,
                     pageSize = RECIPE_PAGINATION_PAGE_SIZE,
+                    page = page
                 )
             }
 

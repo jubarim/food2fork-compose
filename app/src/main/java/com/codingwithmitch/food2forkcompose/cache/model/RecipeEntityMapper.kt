@@ -5,6 +5,7 @@ import com.codingwithmitch.food2forkcompose.domain.util.DomainMapper
 import com.codingwithmitch.food2forkcompose.util.DateUtils
 
 class RecipeEntityMapper : DomainMapper<RecipeEntity, Recipe> {
+
     override fun mapToDomainModel(model: RecipeEntity): Recipe {
         return Recipe(
             id = model.id,
@@ -18,6 +19,7 @@ class RecipeEntityMapper : DomainMapper<RecipeEntity, Recipe> {
             dateUpdated = DateUtils.longToDate(model.dateUpdated),
         )
     }
+
 
     override fun mapFromDomainModel(domainModel: Recipe): RecipeEntity {
         return RecipeEntity(
