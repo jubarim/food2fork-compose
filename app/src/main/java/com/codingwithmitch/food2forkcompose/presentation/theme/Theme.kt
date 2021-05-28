@@ -10,6 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.codingwithmitch.food2forkcompose.presentation.components.CircularIndeterminateProgressBar
 import com.codingwithmitch.food2forkcompose.presentation.components.DefaultSnackbar
+import com.codingwithmitch.food2forkcompose.presentation.components.GenericDialog
+import com.codingwithmitch.food2forkcompose.presentation.components.GenericDialogInfo
+import com.codingwithmitch.food2forkcompose.presentation.ui.util.DialogQueue
+import java.util.*
 
 private val LightThemeColors = lightColors(
   primary = Blue600,
@@ -45,6 +49,7 @@ fun AppTheme(
   darkTheme: Boolean,
   displayProgressBar: Boolean,
   scaffoldState: ScaffoldState,
+  dialogQueue: Queue<GenericDialogInfo>,
   content: @Composable () -> Unit,
 ) {
   MaterialTheme(
@@ -55,7 +60,7 @@ fun AppTheme(
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .background(color = if(!darkTheme) Grey1 else Color.Black)
+        .background(color = if (!darkTheme) Grey1 else Color.Black)
     ){
       content()
       CircularIndeterminateProgressBar(isDisplayed = displayProgressBar, 0.3f)
@@ -66,46 +71,23 @@ fun AppTheme(
         },
         modifier = Modifier.align(Alignment.BottomCenter)
       )
+
+      ProcessDialogQueue(dialogQueue = dialogQueue)
     }
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@Composable
+fun ProcessDialogQueue(
+  dialogQueue: Queue<GenericDialogInfo>,
+) {
+  dialogQueue.peek()?.let { dialogInfo ->
+    GenericDialog(
+      onDismiss = dialogInfo.onDismiss,
+      title = dialogInfo.title,
+      description = dialogInfo.description,
+      positiveAction = dialogInfo.positiveAction,
+      negativeAction = dialogInfo.negativeAction
+    )
+  }
+}

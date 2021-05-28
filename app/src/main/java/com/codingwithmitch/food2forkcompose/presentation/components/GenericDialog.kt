@@ -14,9 +14,9 @@ fun GenericDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     title: String,
-    description: String? = null,
-    positiveAction: PositiveAction? = null,
-    negativeAction: NegativeAction? = null,
+    description: String?,
+  positiveAction: PositiveAction?,
+  negativeAction: NegativeAction?,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -24,7 +24,7 @@ fun GenericDialog(
         title = { Text(title) },
         text = {
             if (description != null) {
-                Text(description)
+              Text(text = description)
             }
         },
         buttons = {
@@ -36,7 +36,7 @@ fun GenericDialog(
             ) {
                 if (negativeAction != null) {
                     Button(
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(end = 8.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.onError),
                         onClick = negativeAction.onNegativeAction
                     ) {
@@ -46,7 +46,7 @@ fun GenericDialog(
 
                 if (positiveAction != null) {
                     Button(
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(end = 8.dp),
                         onClick = positiveAction.onPositiveAction
                     ) {
                         Text(text = positiveAction.positiveBtnTxt)
