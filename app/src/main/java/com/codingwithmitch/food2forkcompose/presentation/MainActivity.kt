@@ -14,13 +14,30 @@ import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeDetailS
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeViewModel
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe_list.RecipeListScreen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe_list.RecipeListViewModel
+import com.codingwithmitch.food2forkcompose.presentation.util.ConnectivityManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
+    override fun onStart() {
+        super.onStart()
+
+        connectivityManager.registerConnectionObserver(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        connectivityManager.unregisterConnectionObserver(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
