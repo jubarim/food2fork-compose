@@ -21,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable
 fun RecipeDetailScreen(
     isDarkTheme: Boolean,
+    isNetworkAvailable: Boolean,
     recipeId: Int?,
     viewModel: RecipeViewModel
 ) {
@@ -47,6 +48,7 @@ fun RecipeDetailScreen(
 
         AppTheme(
             displayProgressBar = loading,
+            isNetworkAvailable = isNetworkAvailable,
             scaffoldState = scaffoldState,
             darkTheme = isDarkTheme,
             dialogQueue = dialogQueue.queue.value,
