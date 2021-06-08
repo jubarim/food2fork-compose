@@ -2,6 +2,7 @@ package com.codingwithmitch.food2forkcompose.presentation.ui.recipe_list
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.codingwithmitch.food2forkcompose.domain.model.Recipe
 import com.codingwithmitch.food2forkcompose.interactors.recipe_list.RestoreRecipes
 import com.codingwithmitch.food2forkcompose.interactors.recipe_list.SearchRecipes
 import com.codingwithmitch.food2forkcompose.presentation.ui.util.DialogQueue
+import com.codingwithmitch.food2forkcompose.presentation.util.ConnectivityManager
 import com.codingwithmitch.food2forkcompose.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -31,6 +33,7 @@ class RecipeListViewModel
 constructor(
     private val searchRecipes: SearchRecipes,
     private val restoreRecipes: RestoreRecipes,
+    private val connectivityManager: ConnectivityManager,
     private @Named("auth_token") val token: String,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -120,7 +123,8 @@ constructor(
         searchRecipes.execute(
             token = token,
             page = page.value,
-            query = query.value
+            query = query.value,
+            isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
         ).onEach { dataState ->
             loading.value = dataState.loading
 
@@ -144,7 +148,8 @@ constructor(
                 searchRecipes.execute(
                     token = token,
                     page = page.value,
-                    query = query.value
+                    query = query.value,
+                    isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                 ).onEach { dataState ->
                     loading.value = dataState.loading
 

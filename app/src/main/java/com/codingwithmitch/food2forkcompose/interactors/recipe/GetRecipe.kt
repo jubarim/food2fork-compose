@@ -12,49 +12,65 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * Retrieve a recipe from the cache given it's unique id.
+ */
 class GetRecipe(
     private val recipeDao: RecipeDao,
-    private val recipeService: RecipeService,
     private val entityMapper: RecipeEntityMapper,
+    private val recipeService: RecipeService,
     private val recipeDtoMapper: RecipeDtoMapper,
 ) {
     fun execute(
-        recipeId: Int, token: String
+        recipeId: Int,
+        token: String,
+        isNetworkAvailable: Boolean,
     ): Flow<DataState<Recipe>> = flow {
-        
+
         try {
-            emit(DataState.loading<Recipe>())
+            emit(DataState.loading())
 
             // TODO: can be removed later
             delay(1000)
 
             // Tricky logic
             var recipe = getRecipeFromCache(recipeId)
+
             if (recipe != null) {
                 emit(DataState.success(recipe))
-            } else {
-                // This else should not happen, but... it might.
-                val networkRecipe = getRecipeFromNetwork(token, recipeId)
+            }
+            // if the recipe is null, it means it was not in the cache for some reason. So get from network.
+            else {
 
-                recipeDao.insertRecipe(
-                    entityMapper.mapFromDomainModel(networkRecipe)
-                )
+                if (isNetworkAvailable) {
+                    // get recipe from network
+                    val networkRecipe = getRecipeFromNetwork(token, recipeId)
 
-                recipe = getRecipeFromCache(recipeId)
+                    // insert into cache
+                    recipeDao.insertRecipe(
+                        // map domain -> entity
+                        entityMapper.mapFromDomainModel(networkRecipe)
+                    )
+                }
+
+                // get from cache
+                recipe = getRecipeFromCache(recipeId = recipeId)
+
+                // emit and finish
                 if (recipe != null) {
                     emit(DataState.success(recipe))
                 } else {
                     // we should not get here at all, but...
-                    throw Exception("Unable to get the recipe from the cache.")
+                    throw Exception("Unable to get recipe from the cache.")
                 }
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "execute: ${e.message}")
 
-            emit(DataState.error<Recipe>(e.message?: "Unknow error"))
+            emit(DataState.error<Recipe>(e.message ?: "Unknown error"))
         }
-        
+
     }
 
     private suspend fun getRecipeFromCache(recipeId: Int): Recipe? {

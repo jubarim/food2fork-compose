@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.food2forkcompose.domain.model.Recipe
 import com.codingwithmitch.food2forkcompose.interactors.recipe.GetRecipe
 import com.codingwithmitch.food2forkcompose.presentation.ui.util.DialogQueue
+import com.codingwithmitch.food2forkcompose.presentation.util.ConnectivityManager
 import com.codingwithmitch.food2forkcompose.util.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +27,7 @@ class RecipeViewModel
 @Inject
 constructor(
     private val getRecipe: GetRecipe,
+    private val connectivityManager: ConnectivityManager,
     @Named("auth_token") private val token: String,
     private val state: SavedStateHandle,
 ): ViewModel(){
@@ -64,7 +66,7 @@ constructor(
 
     private fun getRecipe(id: Int) {
         Log.d(TAG, "getRecipe: id=$id")
-        getRecipe.execute(id, token).onEach { dataState ->
+        getRecipe.execute(id, token, connectivityManager.isNetworkAvailable.value).onEach { dataState ->
             loading.value = dataState.loading
 
             dataState.data?.let { data ->
