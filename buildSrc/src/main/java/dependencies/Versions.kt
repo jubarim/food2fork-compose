@@ -10,8 +10,8 @@ object Versions {
   const val jvmTarget = "1.8"
 
   const val kotlin = "1.4.21-2"
-  const val gradle = "7.0.0-alpha05"
-  const val hilt = "2.31.2-alpha"
+  const val gradle = "7.0.0-beta03"
+  const val hilt = "2.36"
   const val junit5 = "1.7.0.0"
   const val kotlin_compiler_extension = "1.0.0-alpha11"
 
