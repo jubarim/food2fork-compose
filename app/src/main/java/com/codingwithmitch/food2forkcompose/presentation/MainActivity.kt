@@ -1,7 +1,6 @@
 package com.codingwithmitch.food2forkcompose.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.platform.AmbientContext
@@ -10,13 +9,13 @@ import androidx.compose.ui.viewinterop.viewModel
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import com.codingwithmitch.food2forkcompose.datastore.SettingsDataStore
 import com.codingwithmitch.food2forkcompose.presentation.navigation.Screen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeDetailScreen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe.RecipeViewModel
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe_list.RecipeListScreen
 import com.codingwithmitch.food2forkcompose.presentation.ui.recipe_list.RecipeListViewModel
 import com.codingwithmitch.food2forkcompose.presentation.util.ConnectivityManager
-import com.codingwithmitch.food2forkcompose.presentation.util.TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
@@ -28,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var connectivityManager: ConnectivityManager
+
+    @Inject
+    lateinit var settingsDataStore: SettingsDataStore
 
     override fun onStart() {
         super.onStart()
@@ -45,8 +47,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val isInternetAvailable = connectivityManager.isNetworkAvailable.value
-            Log.d(TAG, "onCreate: IS INTERNET AVAILABLE? $isInternetAvailable")
 
             val navController = rememberNavController()
             NavHost(
@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity() {
                     val factory = HiltViewModelFactory(AmbientContext.current, navBackStackEntry)
                     val viewModel: RecipeListViewModel = viewModel("RecipeListViewModel", factory)
                     RecipeListScreen(
-                        isDarkTheme = (application as BaseApplication).isDark.value,
+                        isDarkTheme = settingsDataStore.isDark.value,
                         isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
-                        onToggleTheme = (application as BaseApplication)::toggleLightTheme,
+                        onToggleTheme = settingsDataStore::toggleTheme ,
                         onNavigateToRecipeDetailScreen = navController::navigate, // it passes the route here
                         viewModel = viewModel,
                     )
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     val factory = HiltViewModelFactory(AmbientContext.current, navBackStackEntry)
                     val viewModel: RecipeViewModel = viewModel("RecipeViewModel", factory)
                     RecipeDetailScreen(
-                        isDarkTheme = (application as BaseApplication).isDark.value,
+                        isDarkTheme = settingsDataStore.isDark.value,
                         isNetworkAvailable = connectivityManager.isNetworkAvailable.value,
                         recipeId = navBackStackEntry.arguments?.getInt(RECIPE_ID),
                         viewModel = viewModel,
