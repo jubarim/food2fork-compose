@@ -1,4 +1,4 @@
-package com.codingwithmitch.food2fork.network
+package com.codingwithmitch.food2forkcompose.network
 
 import com.codingwithmitch.food2forkcompose.network.model.RecipeDto
 import com.codingwithmitch.food2forkcompose.network.response.RecipeSearchResponse

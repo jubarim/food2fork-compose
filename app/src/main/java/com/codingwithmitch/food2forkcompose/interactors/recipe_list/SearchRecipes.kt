@@ -1,6 +1,6 @@
 package com.codingwithmitch.food2forkcompose.interactors.recipe_list
 
-import com.codingwithmitch.food2fork.network.RecipeService
+import com.codingwithmitch.food2forkcompose.network.RecipeService
 import com.codingwithmitch.food2forkcompose.cache.RecipeDao
 import com.codingwithmitch.food2forkcompose.cache.model.RecipeEntityMapper
 import com.codingwithmitch.food2forkcompose.domain.data.DataState

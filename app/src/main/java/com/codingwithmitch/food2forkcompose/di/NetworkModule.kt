@@ -1,6 +1,6 @@
 package com.codingwithmitch.food2forkcompose.di
 
-import com.codingwithmitch.food2fork.network.RecipeService
+import com.codingwithmitch.food2forkcompose.network.RecipeService
 import com.codingwithmitch.food2forkcompose.network.model.RecipeDtoMapper
 import com.google.gson.GsonBuilder
 import dagger.Module

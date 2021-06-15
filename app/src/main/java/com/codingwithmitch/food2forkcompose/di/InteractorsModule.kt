@@ -1,6 +1,6 @@
 package com.codingwithmitch.food2forkcompose.di
 
-import com.codingwithmitch.food2fork.network.RecipeService
+import com.codingwithmitch.food2forkcompose.network.RecipeService
 import com.codingwithmitch.food2forkcompose.cache.RecipeDao
 import com.codingwithmitch.food2forkcompose.cache.model.RecipeEntityMapper
 import com.codingwithmitch.food2forkcompose.interactors.recipe.GetRecipe
