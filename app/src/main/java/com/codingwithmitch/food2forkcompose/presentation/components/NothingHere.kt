@@ -1,4 +1,4 @@
-package com.codingwithmitch.food2forkcompose.presentation.components
+ package com.codingwithmitch.food2forkcompose.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -9,8 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-@Composable
+ @Composable
 fun NothingHere(){
     Box(
         modifier = Modifier.fillMaxSize()
@@ -19,7 +20,7 @@ fun NothingHere(){
             Text(
                 modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally),
                 text = "¯\\_(ツ)_/¯",
-                style = TextStyle(fontSize = TextUnit.Companion.Sp(55))
+                style = TextStyle(fontSize = 55.sp)
             )
             Text(
                 modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally),

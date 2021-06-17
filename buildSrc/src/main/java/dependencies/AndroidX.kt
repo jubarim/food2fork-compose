@@ -12,7 +12,8 @@ object AndroidX {
   const val compose_material = "androidx.compose.material:material:${Versions.compose}"
   const val compose_icons_core = "androidx.compose.material:material-icons-core:${Versions.compose}"
   const val compose_icons_extended = "androidx.compose.material:material-icons-extended:${Versions.compose}"
-
+  const val compose_constraint = "androidx.constraintlayout:constraintlayout-compose:${Versions.compose_constraint}"
+  const val compose_activity = "androidx.activity:activity-compose:${Versions.compose_activity}"
   const val navigation_compose = "androidx.navigation:navigation-compose:${Versions.nav_compose}"
   const val navigation_hilt = "androidx.hilt:hilt-navigation:${Versions.hilt_navigation}"
 

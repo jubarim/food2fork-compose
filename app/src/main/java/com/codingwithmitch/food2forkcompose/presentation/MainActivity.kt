@@ -1,12 +1,13 @@
 package com.codingwithmitch.food2forkcompose.presentation
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.codingwithmitch.food2forkcompose.datastore.SettingsDataStore
@@ -20,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             ) {
 
                 composable(route = Screen.RecipeList.route) { navBackStackEntry ->
-                    val factory = HiltViewModelFactory(AmbientContext.current, navBackStackEntry)
+                    val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModel: RecipeListViewModel = viewModel("RecipeListViewModel", factory)
                     RecipeListScreen(
                         isDarkTheme = settingsDataStore.isDark.value,
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                     route = Screen.RecipeDetail.route + "/{$RECIPE_ID}",
                     arguments = listOf(navArgument(RECIPE_ID) { type = NavType.IntType } )
                 ) { navBackStackEntry ->
-                    val factory = HiltViewModelFactory(AmbientContext.current, navBackStackEntry)
+                    val factory = HiltViewModelFactory(LocalContext.current, navBackStackEntry)
                     val viewModel: RecipeViewModel = viewModel("RecipeViewModel", factory)
                     RecipeDetailScreen(
                         isDarkTheme = settingsDataStore.isDark.value,
