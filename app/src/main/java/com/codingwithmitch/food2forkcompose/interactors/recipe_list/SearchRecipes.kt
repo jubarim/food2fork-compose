@@ -24,7 +24,7 @@ class SearchRecipes(
         isNetworkAvailable: Boolean,
     ): Flow<DataState<List<Recipe>>> = flow {
         try {
-      emit(DataState.loading())
+            emit(DataState.loading())
 
             // TODO: just to show pagination / progress bar because API is fast
             delay(1000)

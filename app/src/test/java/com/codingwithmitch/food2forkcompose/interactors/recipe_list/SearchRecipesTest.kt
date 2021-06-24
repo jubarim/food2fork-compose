@@ -3,10 +3,13 @@ package com.codingwithmitch.food2forkcompose.interactors.recipe_list
 import com.codingwithmitch.food2forkcompose.cache.AppDatabaseFake
 import com.codingwithmitch.food2forkcompose.cache.RecipeDaoFake
 import com.codingwithmitch.food2forkcompose.cache.model.RecipeEntityMapper
+import com.codingwithmitch.food2forkcompose.domain.model.Recipe
 import com.codingwithmitch.food2forkcompose.network.RecipeService
 import com.codingwithmitch.food2forkcompose.network.data.MockWebServerResponses.recipeListResponse
 import com.codingwithmitch.food2forkcompose.network.model.RecipeDtoMapper
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -19,9 +22,11 @@ import java.net.HttpURLConnection
 
 class SearchRecipesTest {
 
+  private val appDatabase = AppDatabaseFake()
   private lateinit var mockWebServer: MockWebServer
   private lateinit var baseUrl: HttpUrl
-  private val appDatabase = AppDatabaseFake()
+  private val DUMMY_TOKEN = "gg335v5453453" // can be anything
+  private val DUMMY_QUERY = "This doesn't matter" // can be anything
 
   // system in test
   private lateinit var searchRecipes: SearchRecipes
@@ -43,7 +48,7 @@ class SearchRecipesTest {
       .build()
       .create(RecipeService::class.java)
 
-    recipeDao = RecipeDaoFake(appDatabase)
+    recipeDao = RecipeDaoFake(appDatabaseFake = appDatabase)
 
     // instantiate the system in test
     searchRecipes = SearchRecipes(
@@ -54,18 +59,67 @@ class SearchRecipesTest {
     )
   }
 
+  /**
+   * 1. Are the recipes retrieved from the network?
+   * 2. Are the recipes inserted into the cache?
+   * 3. Are the recipes then emitted as a flow from the cache?
+   */
   @Test
-  fun mockWebServerSetup(){
+  fun getRecipesFromNetwork_emitRecipesFromCache(): Unit = runBlocking {
+
     // condition the response
     mockWebServer.enqueue(
       MockResponse()
         .setResponseCode(HttpURLConnection.HTTP_OK)
         .setBody(recipeListResponse)
     )
+
+    // confirm the cache is empty to start
+    assert(recipeDao.getAllRecipes(1, 30).isEmpty())
+
+    val flowItems = searchRecipes.execute(DUMMY_TOKEN, 1, DUMMY_QUERY, true).toList()
+
+    // Confirm the cache is no longer empty
+    assert(recipeDao.getAllRecipes(1, 30).isNotEmpty())
+
+    // first emission should be the LOADING status
+    assert(flowItems[0].loading)
+
+    // second emission should be the list of recipes
+    val recipes = flowItems[1].data
+    assert(recipes?.size ?: 0 > 0) // elvis to avoid using !!
+
+    // confirm they are actually Recipe objects
+    assert(recipes?.get(0) is Recipe)
+
+    // Ensure loading is false with data emission
+    assert(!flowItems[1].loading)
+  }
+
+  @Test
+  fun getRecipesFromNetwork_emitHttpError() = runBlocking {
+    // condition the response
+    mockWebServer.enqueue(
+      MockResponse()
+        .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
+        .setBody("{}")
+    )
+
+    val flowItems = searchRecipes.execute(DUMMY_TOKEN, 1, DUMMY_QUERY, true).toList()
+
+    // first emission should be the LOADING status
+    assert(flowItems[0].loading)
+
+    // Check for the error
+    val error = flowItems[1].error
+    assert(error != null)
+
+    // Check loading status is gone
+    assert(!flowItems[1].loading)
   }
 
   @AfterEach
-  fun tearDown(){
+  fun tearDown() {
     mockWebServer.shutdown()
   }
 }
